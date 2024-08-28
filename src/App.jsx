@@ -20,9 +20,16 @@ function App() {
    }))
   }
   const calculatedValues = calculateInvestmentResults(values);
-
+  const totalInterest = calculatedValues.map((value) => (
+      value.interest
+  ))
+  const accumulatedInterest = calculatedValues.map((value, index) => {
+    return totalInterest.slice(0, index + 1).reduce((acc, curr) => acc + curr, 0);
+  });
+  
   return (
     <>
+    {console.log(totalInterest, accumulatedInterest)}
       <header id="header">
         <img src="investment-calculator-logo.png" alt="" />
         <h1>Investment Calculator</h1>
@@ -66,10 +73,13 @@ function App() {
             <th>{value.year}</th>
             <th>{value.valueEndOfYear}</th>
             <th>{value.interest}</th>
-            <th>{value.annualInvestment}</th>
+            <th>{
+            
+           
+            
+            }</th>
             <th>0</th>
           </tr>           
-
 ))}
         </tbody>
       </table>
