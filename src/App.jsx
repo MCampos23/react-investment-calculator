@@ -1,77 +1,33 @@
 import { useState } from "react";
-import { calculateInvestmentResults, formatter } from "./util/investment";
-
-let nextId = 0;
+import { calculateInvestmentResults } from "./util/investment";
+import UserInput from "./components/UserInput";
+import Header from "./components/Header";
+import Results from "./components/Results";
 
 function App() {
-
   const [values, setValues] = useState({
-    initialInvestment: 0,
-    annualInvestment: 0,
-    expectedReturn: 0,
-    duration: 0
+    initialInvestment: 10000,
+    annualInvestment: 1200,
+    expectedReturn: 6,
+    duration: 10,
   });
 
-  // values = [{initial-investment: 34, anual-investment:45, expected-return:9, duration: 10}, ...]
   function handleInput(e, input) {
-    setValues(prevValues => ({
-     ...prevValues,
-    [input]: parseInt(e.target.value , 10),
-   }))
+    setValues((prevValues) => ({
+      ...prevValues,
+      [input]: parseInt(e.target.value, 10),
+    }));
   }
   const calculatedValues = calculateInvestmentResults(values);
-  
+
+  const isValidValues = values.duration >= 1;
+
   return (
     <>
-      <header id="header">
-        <img src="investment-calculator-logo.png" alt="" />
-        <h1>Investment Calculator</h1>
-      </header>
-      <div id="user-input">
-        <div className="input-group">
-          <label>
-            INITIAL INVESTMENT
-            <input type="number" onChange={(e) => handleInput(e,'initialInvestment')}/>
-          </label>
-          <label>
-            ANUAL INVESTMENT
-            <input type="number"  onChange={(e) => handleInput(e,'annualInvestment')}/>
-          </label>
-        </div>
-        <div className="input-group">
-          <label>
-            EXPECTED RETURN
-            <input type="number"  onChange={(e) => handleInput(e,'expectedReturn')}/>
-          </label>
-          <label>
-            DURATION
-            <input type="number"  onChange={(e) => handleInput(e,'duration')}/>
-          </label>
-        </div>
-      </div>
-
-      <table id="result">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th>Investment Value</th>
-            <th>Interest (Year)</th>
-            <th>Total Interest</th>
-            <th>Invested Capital</th>
-          </tr>
-        </thead>
-        <tbody>
-        {calculatedValues.map((value, index) => (
-          <tr key={index}>
-            <th>{value.year}</th>
-            <th>{formatter.format(value.valueEndOfYear)}</th>
-            <th>{formatter.format(value.interest)}</th>
-            <th>{formatter.format(value.accumulatedInterest)}</th>
-            <th>{formatter.format(value.accumulatedInvested)}</th>
-          </tr>           
-))}
-        </tbody>
-      </table>
+      <Header />
+      <UserInput onChangeInput={handleInput} values={values} />
+      {!isValidValues && <p className="center">The duration must be greater than zero.</p>}
+      {isValidValues && <Results calculatedValues={calculatedValues} />}
     </>
   );
 }
